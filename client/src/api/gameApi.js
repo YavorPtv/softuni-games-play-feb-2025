@@ -1,6 +1,7 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import request from "../utils/request";
 import { UserContext } from "../contexts/UserContext";
+import { useState } from "react";
 
 const baseUrl = 'http://localhost:3030/data/games';
 
@@ -25,6 +26,19 @@ export default {
         return request.put(`${baseUrl}/${gameId}`, {...gameData, _id: gameId });
     }
 };
+
+export const useGames = () => {
+    const [games, setGames] = useState([]);
+
+    useEffect(() => {
+        request.get(baseUrl)
+            .then(setGames);
+    }, []);
+
+    return {
+        games,
+    };
+}
 
 export const useCreateGame = () => {
     const { accessToken } = useContext(UserContext);
