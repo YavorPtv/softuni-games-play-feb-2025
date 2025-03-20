@@ -31,6 +31,23 @@ export const useGame = (gameId) => {
     };
 }
 
+export const useLatestGames = () => {
+    const PAGE_SIZE = 3;
+    const [latestGames, setLatestGames] = useState([]);
+
+    useEffect(() => {
+        const searchParams = new URLSearchParams({
+            sortBy: '_createdOn desc',
+            pageSize: PAGE_SIZE,
+        })
+
+        request.get(`${baseUrl}?${searchParams.toString()}`)
+            .then(setLatestGames);
+    }, []);
+
+    return { latestGames };
+}
+
 export const useCreateGame = () => {
     const { request } = useAuth();
 
@@ -63,3 +80,4 @@ export const useDeleteGame = () => {
         deleteGame,
     }
 }
+
