@@ -3,7 +3,6 @@ import { useLatestGames } from "../../api/gameApi";
 export default function Home() {
     const { latestGames } = useLatestGames();
 
-    console.log(latestGames);
     return (
         <section id="welcome-world">
 
@@ -17,7 +16,7 @@ export default function Home() {
                 <h1>Latest Games</h1>
 
                 {latestGames.map(game => (
-                    <div className="game">
+                    <div className="game" key={game._id}>
                         <div className="image-wrap">
                             <img src={game.imageUrl} />
                         </div>
