@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { useLatestGames } from "../../api/gameApi";
 
 export default function Home() {
@@ -15,7 +16,7 @@ export default function Home() {
             <div id="home-page">
                 <h1>Latest Games</h1>
 
-                {latestGames.map(game => (
+                {latestGames.length > 0 && latestGames.map(game => (
                     <div className="game" key={game._id}>
                         <div className="image-wrap">
                             <img src={game.imageUrl} />
@@ -25,7 +26,7 @@ export default function Home() {
                             <span>☆</span><span>☆</span><span>☆</span><span>☆</span><span>☆</span>
                         </div>
                         <div className="data-buttons">
-                            <a href={`/games/${game._id}/details`} className="btn details-btn">Details</a>
+                            <Link to={`/games/${game._id}/details`} className="btn details-btn">Details</Link>
                         </div>
                     </div>
                 ))}
