@@ -13,9 +13,10 @@ import GameCreate from './components/game-create/GameCreate.jsx';
 import GameDetails from './components/game-details/GameDetails.jsx';
 import GameEdit from './components/game-edit/GameEdit.jsx';
 import Logout from './components/logout/Logout.jsx';
+import usePersistedState from './hooks/usePersistedState.js';
 
 function App() {
-    const [authData, setAuthData] = useState({});
+    const [authData, setAuthData] = usePersistedState('auth', {});
 
     const userLoginHandler = (resultData) => {
         setAuthData(resultData);
