@@ -11,7 +11,7 @@ export default function GameDetails() {
     const { gameId } = useParams();
     const { game } = useGame(gameId);
     const { deleteGame } = useDeleteGame();
-    const { comments } = useComments(gameId);
+    const { comments, setComments } = useComments(gameId);
     const { create } = useCreateComment();
 
     const gameDeleteClickHandler = async () => {
@@ -27,7 +27,8 @@ export default function GameDetails() {
     };
 
     const commentCreateHandler = async (comment) => {
-        await create(gameId, comment);
+        const newComment = await create(gameId, comment);
+        setComments(state => [...state, newComment]);
     };
 
     const isOwner = userId === game._ownerId;
