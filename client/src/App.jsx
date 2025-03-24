@@ -12,6 +12,7 @@ import GameCreate from './components/game-create/GameCreate.jsx';
 import GameDetails from './components/game-details/GameDetails.jsx';
 import GameEdit from './components/game-edit/GameEdit.jsx';
 import Logout from './components/logout/Logout.jsx';
+import AuthGuard from './components/guards/AuthGuard.jsx';
 
 function App() {
     return (
@@ -22,12 +23,14 @@ function App() {
                     <Routes>
                         <Route index element={<Home />} />
                         <Route path="/games" element={<GameCatalog />} />
-                        <Route path="/games/create" element={<GameCreate />} />
                         <Route path="/games/:gameId/details" element={<GameDetails />} />
-                        <Route path="/games/:gameId/edit" element={<GameEdit />} />
+                        <Route element={<AuthGuard />} >
+                            <Route path="/games/create" element={<GameCreate />} />
+                            <Route path="/games/:gameId/edit" element={<GameEdit />} />
+                            <Route path="/logout" element={<Logout />} />
+                        </Route>
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
-                        <Route path="/logout" element={<Logout />} />
                     </Routes>
                 </main>
             </div>
