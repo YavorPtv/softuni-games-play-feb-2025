@@ -1,18 +1,23 @@
+import { useOptimistic } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import CommentsShow from "../comments-show/CommentsShow";
 import CommentsCreate from "../comments-create/CommentsCreate";
 import { useDeleteGame, useGame } from "../../api/gameApi";
 import useAuth from "../../hooks/useAuth";
 import { useComments, useCreateComment } from "../../api/commentsApi";
+import { v4 as uuid} from 'uuid';
 
 export default function GameDetails() {
     const navigate = useNavigate();
-    const { email, _id: userId } = useAuth();
+    const { email, userId } = useAuth();
     const { gameId } = useParams();
     const { game } = useGame(gameId);
     const { deleteGame } = useDeleteGame();
-    const { comments, setComments } = useComments(gameId);
     const { create } = useCreateComment();
+    const { comments, addComment } = useComments(gameId);
+    const [optimisticComments, setOptimisticComments] = useOptimistic(comments);
+
+    // console.log(optimisticComments);
 
     const gameDeleteClickHandler = async () => {
         const hasConfirm = confirm(`Are you sure you want to delete ${game.title} game?`);
@@ -27,8 +32,19 @@ export default function GameDetails() {
     };
 
     const commentCreateHandler = async (comment) => {
-        const newComment = await create(gameId, comment);
-        setComments(state => [...state, newComment]);
+        const newOptimisticComment = {
+            _id: uuid(),
+            _ownerId: userId,
+            gameId,
+            comment,
+            pending: true,
+        }
+
+        setOptimisticComments(optimisticState => [...optimisticState, newOptimisticComment]);
+
+        const commentResult = await create(gameId, comment);
+
+        addComment(commentResult);
     };
 
     const isOwner = userId === game._ownerId;
@@ -47,7 +63,7 @@ export default function GameDetails() {
 
                 <p className="text">{game.summary}</p>
 
-                <CommentsShow comments={comments} />
+                <CommentsShow comments={optimisticComments} />
 
                 {/* <!-- Edit/Delete buttons ( Only for creator of this game )  --> */}
                 {isOwner && (
