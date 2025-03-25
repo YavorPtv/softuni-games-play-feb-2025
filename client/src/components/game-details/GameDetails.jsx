@@ -17,7 +17,7 @@ export default function GameDetails() {
     const { comments, addComment } = useComments(gameId);
     const [optimisticComments, setOptimisticComments] = useOptimistic(comments);
 
-    // console.log(optimisticComments);
+    console.log(optimisticComments);
 
     const gameDeleteClickHandler = async () => {
         const hasConfirm = confirm(`Are you sure you want to delete ${game.title} game?`);
@@ -38,13 +38,16 @@ export default function GameDetails() {
             gameId,
             comment,
             pending: true,
+            author: {
+                email,
+            }
         }
 
         setOptimisticComments(optimisticState => [...optimisticState, newOptimisticComment]);
 
         const commentResult = await create(gameId, comment);
 
-        addComment(commentResult);
+        addComment({...commentResult, author: { email }});
     };
 
     const isOwner = userId === game._ownerId;
