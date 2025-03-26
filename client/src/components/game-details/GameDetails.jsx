@@ -15,7 +15,7 @@ export default function GameDetails() {
     const { deleteGame } = useDeleteGame();
     const { create } = useCreateComment();
     const { comments, addComment } = useComments(gameId);
-    const [optimisticComments, setOptimisticComments] = useOptimistic(comments);
+    const [optimisticComments, setOptimisticComments] = useOptimistic(comments, (state, newComment) => [...state, newComment]);
 
     console.log(optimisticComments);
 
@@ -31,7 +31,9 @@ export default function GameDetails() {
         navigate('/games');
     };
 
-    const commentCreateHandler = async (comment) => {
+    const commentCreateHandler = async (formData) => {
+        const comment = formData.get('comment');
+        
         const newOptimisticComment = {
             _id: uuid(),
             _ownerId: userId,
@@ -43,7 +45,7 @@ export default function GameDetails() {
             }
         }
 
-        setOptimisticComments(optimisticState => [...optimisticState, newOptimisticComment]);
+        setOptimisticComments(newOptimisticComment);
 
         const commentResult = await create(gameId, comment);
 
